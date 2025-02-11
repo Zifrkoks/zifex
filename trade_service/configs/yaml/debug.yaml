@@ -1,0 +1,9 @@
+server:
+  port: "8080"
+  address: "localhost"
+
+database:
+  dsn: "user:pass@tcp(127.0.0.1:3306)/dbname?charset=utf8mb4&parseTime=True&loc=Local"
+
+cache:
+  dsn: "redis://<user>:<pass>@localhost:6379/<db>" 

@@ -25,7 +25,9 @@ func (CryptoRepository) Get(id uint) (crypto *Crypto, err error) {
 func (CryptoRepository) GetBySymbol(symbol string) (crypto *Crypto, err error) {
 	return nil, nil
 }
-
+func (CryptoRepository) GetPoint(symbol string) (point uint8, err error) {
+	return 0, nil
+}
 func (CryptoRepository) Create(Crypto *Crypto) (crypto *Crypto, err error) {
 	return nil, nil
 }

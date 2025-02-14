@@ -21,6 +21,9 @@ func (TariffRepository) GetAllPaging(page uint, count uint) []Tariff {
 func (TariffRepository) Get(id uint) *Tariff {
 	return nil
 }
+func (TariffRepository) GetCommision(id uint) *Tariff {
+	return nil
+}
 
 func (TariffRepository) Create(Tariff *Tariff) *Tariff {
 	return nil

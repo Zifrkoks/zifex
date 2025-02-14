@@ -29,6 +29,7 @@ func (service TradeService) FindActiveTradesFull(bought string, sold string) (tr
 	}
 	return tradesByPrices, nil
 }
+
 func (service TradeService) FindActiveTrades(bought string, sold string) (tradesByPrices map[uint]uint64, err error) {
 	trades, err := service.trades.GetActiveByBuyAndSell(bought, sold)
 	if err != nil {
@@ -36,29 +37,54 @@ func (service TradeService) FindActiveTrades(bought string, sold string) (trades
 	}
 	tradesByPrices = map[uint]uint64{}
 	for i := 0; i < len(*trades); i++ {
-		count := tradesByPrices[uint((*trades)[i].PricePerInt)] + (*trades)[i].SoldCount
-		tradesByPrices[uint((*trades)[i].PricePerInt)] = count
+		count := tradesByPrices[uint((*trades)[i].GetPrice())] + (*trades)[i].SoldCount
+		tradesByPrices[uint((*trades)[i].GetPrice())] = count
 	}
 	return tradesByPrices, nil
 }
+
 func (service TradeService) CreateTrade(trade Trade) (result Trade, err error) {
-	var oppositePrice uint64
-	oppositePrice = 1 / trade.PricePerInt // пока додумать как перевести в интовую форму а не float, без потерь в точности
+	BuyPoint, err := service.cryptos.GetPoint(trade.Buy)
+	if err != nil {
+		return trade, err
+	}
+	SellPoint, err := service.cryptos.GetPoint(trade.Sell)
+	if err != nil {
+		return trade, err
+	}
+	oppositePrice := trade.GetReversePrice(BuyPoint, SellPoint)
 	oppositeTrades, err := service.trades.GetActiveByBuySellPrice(trade.Sell, trade.Buy, oppositePrice)
 	if err != nil {
 		return trade, err
 	}
+	if oppositeTrades == nil {
+		//создание трейда
+	}
 
-	tradeBuyCripto, err := service.cryptos.GetBySymbol(trade.Buy)
-	if err != nil {
-		return trade, err
-	}
-	tradeSellCripto, err := service.cryptos.GetBySymbol(trade.Sell)
-	if err != nil {
-		return trade, err
-	}
 	for i := 0; i < len(*oppositeTrades); i++ {
+		if (*oppositeTrades)[i].OnSaleCount < trade.BuyCount {
+			trade.BuyCount
+			(*oppositeTrades)[i].OnSaleCount = 0
+
+			//закрытие обратного трейда
+		}
+		if (*oppositeTrades)[i].OnSaleCount > trade.BuyCount {
+			(*oppositeTrades)[i].OnSaleCount -= trade.BuyCount
+			(*oppositeTrades)[i].SoldCount += trade.BuyCount
+			//создание  выполненого трейда
+			//изменение статуса обратного трейда
+		}
+		if (*oppositeTrades)[i].OnSaleCount == trade.BuyCount {
+			(*oppositeTrades)[i].OnSaleCount = (*oppositeTrades)[i].OnSaleCount - trade.BuyCount
+			//создание  выполненого трейда
+			//закрытие обратного трейда
+		}
 
 	}
 
+	return trade, err
+}
+
+func (service TradeService) reversePrice(price uint64) uint64 {
+	return 0
 }

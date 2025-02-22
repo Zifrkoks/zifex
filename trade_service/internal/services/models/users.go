@@ -2,13 +2,15 @@ package models
 
 type (
 	User struct {
-		ID             uint
-		CryptoWallets  map[string]uint
-		FavoriteCripto []string
-		Username       string
-		Tariff         uint
-		SecLevel       byte
-		Trades         []uint
+		ID              uint
+		CryptoWallets   map[string]uint64 //[symbol]count
+		FreezeCrypto    map[string]uint64
+		FreezeCommision map[uint]uint64 //[trade id]countOfSellingCrypto
+		FavoriteCripto  []string
+		Username        string
+		TariffProcent   uint8
+		SecLevel        byte
+		Trades          []uint
 	}
 
 	Tariff struct {

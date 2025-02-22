@@ -10,30 +10,30 @@ type TariffRepository struct {
 	db *gorm.DB
 }
 
-func (TariffRepository) GetAll() []Tariff {
-	return nil
+func (TariffRepository) GetAll() (tar []Tariff, err error) {
+	return
 }
 
-func (TariffRepository) GetAllPaging(page uint, count uint) []Tariff {
-	return nil
+func (TariffRepository) GetAllPaging(page uint, count uint) (tar []Tariff, err error) {
+	return
 }
 
-func (TariffRepository) Get(id uint) *Tariff {
-	return nil
+func (TariffRepository) Get(id uint) (tar *Tariff, err error) {
+	return
 }
-func (TariffRepository) GetCommision(id uint) *Tariff {
-	return nil
-}
-
-func (TariffRepository) Create(Tariff *Tariff) *Tariff {
-	return nil
-}
-func (TariffRepository) Update(Tariff *Tariff) *Tariff {
-	return nil
+func (TariffRepository) GetCommision(id uint) (tar *Tariff, err error) {
+	return
 }
 
-func (TariffRepository) Delete(Tariff *Tariff) *Tariff {
-	return nil
+func (TariffRepository) Create(Tariff *Tariff) (tar *Tariff, err error) {
+	return
+}
+func (TariffRepository) Update(Tariff *Tariff) (tar *Tariff, err error) {
+	return
+}
+
+func (TariffRepository) Delete(Tariff *Tariff) (tar *Tariff, err error) {
+	return
 }
 
 func NewTariffRepository() *TradeRepository {

@@ -19,9 +19,10 @@ const (
 	PartlySuccess
 	Success
 	Cenceled
+	PartlyCenceled
 )
 
-func (t Trade) GetReversePrice(buyCrypto uint8, sellCrypto uint8) uint64 {
+func (t Trade) GetReversePrice() uint64 {
 	return 0
 }
 func (t Trade) GetPrice() uint64 {

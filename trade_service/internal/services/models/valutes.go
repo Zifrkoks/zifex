@@ -6,7 +6,6 @@ type (
 		Symbol             string
 		LastPricesToCrypto map[string]uint
 		Count              uint64
-		MinUnitDegree      uint8
 		CorrToReal         int8
 	}
 )

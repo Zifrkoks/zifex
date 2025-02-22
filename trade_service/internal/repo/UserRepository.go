@@ -18,8 +18,8 @@ func (UserRepository) GetAllPaging(page uint, count uint) []User {
 	return nil
 }
 
-func (UserRepository) Get(id uint) *User {
-	return nil
+func (UserRepository) Get(id uint) (*User, error) {
+	return nil, nil
 }
 
 func (UserRepository) Create(user *User) *User {

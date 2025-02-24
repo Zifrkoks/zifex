@@ -10,6 +10,9 @@ type CryptoRepository struct {
 	db *gorm.DB
 }
 
+func NewCryptoRepository() *TradeRepository {
+	return nil
+}
 func (CryptoRepository) GetAll() (crypto []Crypto, err error) {
 	return nil, nil
 }
@@ -39,6 +42,6 @@ func (CryptoRepository) Delete(Crypto *Crypto) (crypto *Crypto, err error) {
 	return nil, nil
 }
 
-func NewCryptoRepository() *TradeRepository {
+func (CryptoRepository) CheckNames(names ...string) error {
 	return nil
 }

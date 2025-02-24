@@ -8,7 +8,7 @@ type (
 		FreezeCommision map[uint]uint64 //[trade id]countOfSellingCrypto
 		FavoriteCripto  []string
 		Username        string
-		TariffProcent   uint8
+		TariffProcent   uint8 //1 equal 0.001 procent
 		SecLevel        byte
 		Trades          []uint
 	}

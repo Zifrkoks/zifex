@@ -7,3 +7,7 @@ database:
 
 cache:
   dsn: "redis://<user>:<pass>@localhost:6379/<db>" 
+
+
+service:
+  minProcent: 10000

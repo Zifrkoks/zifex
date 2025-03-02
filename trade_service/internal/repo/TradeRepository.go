@@ -27,8 +27,11 @@ func (TradeRepository) Get(id uint) (*Trade, error) {
 	return nil, nil
 }
 
-func (TradeRepository) Create(trade *Trade) (*Trade, error) {
-	return nil, nil
+func (TradeRepository) Create(trade *Trade) error {
+	return nil
+}
+func (TradeRepository) SaveWithUser(trade *Trade, user *User) error {
+	return nil
 }
 func (TradeRepository) Update(trade *Trade) (*Trade, error) {
 	return nil, nil

@@ -5,6 +5,8 @@ import (
 	"math"
 	. "zifex_trade_service/internal/repo"
 	. "zifex_trade_service/internal/services/models"
+
+	"github.com/spf13/viper"
 )
 
 type TradeService struct {
@@ -45,8 +47,16 @@ func (service TradeService) FindActiveTrades(bought string, sold string) (trades
 	return tradesByPrices, nil
 }
 
-func (service TradeService) CreateTrade(trade Trade) (err error) {
+func (service TradeService) CreateTrade(trade *Trade) (err error) {
 	creator, err := service.users.Get(trade.Castomer)
+	if err != nil {
+		return err
+	}
+	err = service.checkTrade(trade, creator)
+	if err != nil {
+		return err
+	}
+	err = service.trades.Create(trade)
 	if err != nil {
 		return err
 	}
@@ -56,7 +66,7 @@ func (service TradeService) CreateTrade(trade Trade) (err error) {
 		return err
 	}
 	if oppositeTrades == nil {
-		service.createTrade(&trade, creator)
+		service.createTrade(trade, creator)
 		return
 	}
 
@@ -66,19 +76,19 @@ func (service TradeService) CreateTrade(trade Trade) (err error) {
 			continue
 		}
 		if opTrade.OnSaleCount < trade.BuyCount {
-			service.closeTradePartly(&trade, creator, opTrade)
+			service.closeTradePartly(trade, creator, opTrade)
 			service.closeTrade(&opTrade, castomer)
 			continue
 		}
 		if opTrade.OnSaleCount > trade.BuyCount {
-			service.closeTradePartly(&opTrade, castomer, trade)
-			service.closeTrade(&trade, creator)
-			continue
+			service.closeTradePartly(&opTrade, castomer, *trade)
+			service.closeTrade(trade, creator)
+			break
 		}
 		if opTrade.OnSaleCount == trade.BuyCount {
-			service.closeTrade(&trade, creator)
+			service.closeTrade(trade, creator)
 			service.closeTrade(&opTrade, castomer)
-			continue
+			break
 		}
 
 	}
@@ -87,20 +97,11 @@ func (service TradeService) CreateTrade(trade Trade) (err error) {
 }
 
 func (service TradeService) createTrade(tr *Trade, u *User) error {
-	if tr.Castomer != u.ID {
-		return errors.New("castomer id and user id not equal")
-	}
-	if err := service.cryptos.CheckNames(tr.Buy, tr.Sell); err != nil {
-		return err
-	}
-	totalCost := tr.OnSaleCount + (tr.OnSaleCount * uint64(u.TariffProcent) / 10000)
-
-	if val, ok := u.CryptoWallets[tr.Sell]; !ok || totalCost > val {
-		return errors.New("user has no so mach money")
-	}
-
-	u.CryptoWallets[tr.Sell] -= totalCost
+	commison := tr.OnSaleCount * uint64(u.TariffProcent) / (viper.GetUint64("service.minProcent"))
+	u.CryptoWallets[tr.Sell] -= (tr.OnSaleCount + commison)
 	u.FreezeCrypto[tr.Sell] += tr.OnSaleCount
+	u.FreezeCommision[tr.ID] = commison
+	service.trades.SaveWithUser(tr, u)
 	return nil
 }
 
@@ -122,9 +123,11 @@ func (service TradeService) closeTrade(tr1 *Trade, u1 *User) error {
 	tr1.BuyCount = 0
 	tr1.OnSaleCount = 0
 	tr1.Status = Success
+	service.trades.SaveWithUser(tr1, u1)
 	return nil
 }
 
+// close trade tr1 by using trade tr2
 func (service TradeService) closeTradePartly(tr1 *Trade, u1 *User, tr2 Trade) error {
 	if tr1.BuyCount < tr1.OnSaleCount {
 		return errors.New("cant close partly because trade buy count less then trade that close")
@@ -140,5 +143,20 @@ func (service TradeService) closeTradePartly(tr1 *Trade, u1 *User, tr2 Trade) er
 	}
 	u1.FreezeCrypto[tr1.Sell] -= tr2.BuyCount
 	tr1.Status = PartlySuccess
+	service.trades.SaveWithUser(tr1, u1)
+	return nil
+}
+
+// validate Trade
+func (service TradeService) checkTrade(tr *Trade, u *User) error {
+	if err := service.cryptos.CheckNames(tr.Buy, tr.Sell); err != nil {
+		return err
+	}
+	totalCost := tr.OnSaleCount + (tr.OnSaleCount * uint64(u.TariffProcent) / (viper.GetUint64("service.minProcent")))
+
+	if val, ok := u.CryptoWallets[tr.Sell]; !ok || totalCost > val {
+		return errors.New("user has no so mach money")
+	}
+
 	return nil
 }

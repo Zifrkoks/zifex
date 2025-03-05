@@ -13,7 +13,6 @@ type TradeService struct {
 	users   *UserRepository
 	cryptos *CryptoRepository
 	trades  *TradeRepository
-	tariffs *TariffRepository
 }
 
 func (service TradeService) FindActiveTradesFull(bought string, sold string) (tradesByPrices map[uint][]Trade, err error) {
@@ -94,6 +93,25 @@ func (service TradeService) CreateTrade(trade *Trade) (err error) {
 	}
 
 	return err
+}
+
+func (service TradeService) CencelTrade(trId uint, u *User) error {
+	trade, err := service.trades.Get(trId)
+	if err != nil {
+		return err
+	}
+	if trade.Castomer != u.ID {
+		return errors.New("trade dont beelongs to user")
+	}
+	u.CryptoWallets[trade.Sell] += ((u.FreezeCommision[trade.ID]) + trade.OnSaleCount)
+	u.FreezeCrypto[trade.Sell] -= trade.OnSaleCount
+	if u.FreezeCrypto[trade.Sell] <= 0 {
+		delete(u.FreezeCrypto, trade.Sell)
+	}
+	delete(u.FreezeCommision, trade.ID)
+	trade.Status = Cenceled
+	service.trades.SaveWithUser(trade, u)
+	return nil
 }
 
 func (service TradeService) createTrade(tr *Trade, u *User) error {

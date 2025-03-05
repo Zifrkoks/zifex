@@ -22,10 +22,10 @@ func (UserRepository) Get(id uint) (*User, error) {
 	return nil, nil
 }
 
-func (UserRepository) Create(user *User) *User {
-	return nil
+func (UserRepository) Create(user *User) (u *User, err error) {
+	return
 }
-func (UserRepository) Update(user *User) *User {
+func (UserRepository) Update(user *User) error {
 	return nil
 }
 

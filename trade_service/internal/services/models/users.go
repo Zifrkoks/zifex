@@ -15,7 +15,7 @@ type (
 
 	Tariff struct {
 		ID         uint
-		Comission  uint
+		Comission  uint8
 		Permission uint
 	}
 )

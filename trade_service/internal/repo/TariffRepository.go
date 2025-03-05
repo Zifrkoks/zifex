@@ -10,6 +10,10 @@ type TariffRepository struct {
 	db *gorm.DB
 }
 
+func (t *TariffRepository) GetStandartTariff() (*Tariff, error) {
+	panic("unimplemented")
+}
+
 func (TariffRepository) GetAll() (tar []Tariff, err error) {
 	return
 }

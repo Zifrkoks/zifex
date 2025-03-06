@@ -12,10 +12,4 @@ type (
 		SecLevel        byte
 		Trades          []uint
 	}
-
-	Tariff struct {
-		ID         uint
-		Comission  uint8
-		Permission uint
-	}
 )

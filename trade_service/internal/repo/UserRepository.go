@@ -21,7 +21,9 @@ func (UserRepository) GetAllPaging(page uint, count uint) []User {
 func (UserRepository) Get(id uint) (*User, error) {
 	return nil, nil
 }
-
+func (UserRepository) GetByUsername(username string) (*User, error) {
+	return nil, nil
+}
 func (UserRepository) Create(user *User) (u *User, err error) {
 	return
 }

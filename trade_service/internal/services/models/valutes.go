@@ -7,5 +7,6 @@ type (
 		LastPricesToCrypto map[string]uint
 		Count              uint64
 		CorrToReal         int8
+		RealDegree         int8
 	}
 )

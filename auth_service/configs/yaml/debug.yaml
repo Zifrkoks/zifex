@@ -1,0 +1,2 @@
+SECRET_KEY: "huinyaPolya"
+TOKEN_DURATION_MIN: 30

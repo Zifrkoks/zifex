@@ -1,0 +1,5 @@
+package authservice
+
+func main() {
+
+}

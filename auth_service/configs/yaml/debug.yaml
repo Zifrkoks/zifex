@@ -1,2 +1,3 @@
-SECRET_KEY: "huinyaPolya"
-TOKEN_DURATION_MIN: 30
+jwt:
+  secret: "huinyaPolaya"
+  exp: "30"

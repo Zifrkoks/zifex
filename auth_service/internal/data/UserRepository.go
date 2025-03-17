@@ -14,3 +14,7 @@ func (r UserRepository) GetById(id uint) (*User, error) {
 func (r UserRepository) GetByUsername(username string) (*User, error) {
 	return nil, nil
 }
+
+func (r UserRepository) AddPermisions(usernameOrId interface{}, permissions map[string]string) (bool, error) {
+	return false, nil
+}

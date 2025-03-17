@@ -4,6 +4,6 @@ type (
 	User struct {
 		Username    string
 		Password    string
-		Permissions string
+		Permissions map[string]string
 	}
 )
